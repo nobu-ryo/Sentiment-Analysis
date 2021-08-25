@@ -43,7 +43,6 @@ class EmotionAnalysis:
     def analysis(self): #分析
         self.load_model()
         word_list = [self.extract_words (sentence) for sentence in self.text]
-        #print(word_list)
         limit = 0 #類似度の下限
         i = 1 #強調
         for x in word_list:
@@ -52,16 +51,12 @@ class EmotionAnalysis:
                     i = 2
                     continue
                 token = self.t.tokenize(y).__next__().part_of_speech.split(',')[0]
-                #print(f"\n{y}: {token}")
                 if (y in self.model.wv.vocab) and (y != "する") and (token != '副詞'):
-                    #print(f"{i}倍しました！")
                     for z in range(0, len(self.labels)):
-                        #print(self.labels[z], ", ", y, " : ", end = '')
                         if (i > 1) and (token == '形容詞' or token == '名詞'):
                             dos  = self.model.wv.similarity(self.labels[z], y) * i
                         else:
                             dos = self.model.wv.similarity(self.labels[z], y)
-                        #print(dos)
                         if dos > limit:
                             self.labelvalue[z] += dos
                 i = 1
