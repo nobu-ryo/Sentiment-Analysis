@@ -16,27 +16,27 @@ class EmotionAnalysis:
         self.t = Tokenizer()
         self.model = None
         self.labels = ['喜び', '悲しみ', '怒り', '驚き', '恐れ', '嫌悪']
-        self.labels2 = ['happiness', 'sadness', 'anger', 'surprise', 'fear', 'disgust']
+        self.labels2 = ['happiness', 'sadness', 'anger', 'surprise', 'fear', 'disgust'] #文字化けのため
         self.labelvalue = [0, 0, 0, 0, 0, 0]
-        self.emphasis = ['とても','すごい','本当に']
+        self.emphasis = ['とても','すごい','本当に']　#強調の単語
 
     def extract_words(self, s):
         tokens = self.t.tokenize(s)
         return [token.base_form for token in tokens if token.part_of_speech.split(',')[0] in ['名詞', '形容詞', '動詞', '副詞']]
 
     def make_new_model(self): #新しいモデルを作成
-        with open(r"./textfolder/emotion_mix.txt", encoding = "utf-8") as file:
+        with open(r"./textfolder/[your text file name]", encoding = "utf-8") as file:
             txt = file.read()
         sentences = txt.split('\n')
         word_list = [self.extract_words(sentence) for sentence in sentences]
         
         model = word2vec.Word2Vec(word_list, size = 100, min_count = 1, window = 5, iter = 100)
-        model.save("final_emotion.model")
+        model.save("[your favorite name].model")
         self.analysis()
 
     def load_model(self): #モデルのロード
         try:
-            self.model = word2vec.Word2Vec.load("final_emotion.model")
+            self.model = word2vec.Word2Vec.load("[your favorite name].model")
         except FileNotFoundError:
             print("モデルが見つかりません！New Modelボタンから実行してください。")
 
