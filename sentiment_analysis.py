@@ -1,10 +1,9 @@
-
 from janome.tokenizer import Tokenizer
 from gensim.models import word2vec
 import tkinter as tk
 import re
 
-from Radarchart import plot_radarchart
+from Radarchart import plot_radarchart　#結果出力用関数
 
 #========================================== word2vec ===========================================
 
@@ -25,13 +24,13 @@ class EmotionAnalysis:
         return [token.base_form for token in tokens if token.part_of_speech.split(',')[0] in ['名詞', '形容詞', '動詞', '副詞']]
 
     def make_new_model(self): #新しいモデルを作成
-        with open(r"./textfolder/[your text file name]", encoding = "utf-8") as file:
+        with open(r"./textfolder/[your text file name].txt", encoding = "utf-8") as file:
             txt = file.read()
         sentences = txt.split('\n')
         word_list = [self.extract_words(sentence) for sentence in sentences]
         
         model = word2vec.Word2Vec(word_list, size = 100, min_count = 1, window = 5, iter = 100)
-        model.save("[your favorite name].model")
+        model.save("[create model].model")
         self.analysis()
 
     def load_model(self): #モデルのロード
@@ -43,12 +42,12 @@ class EmotionAnalysis:
     def analysis(self): #分析
         self.load_model()
         word_list = [self.extract_words (sentence) for sentence in self.text]
-        limit = 0 #類似度の下限
+        limit = 0 #類似度の下限、負の値がでる可能性が有るため
         i = 1 #強調
         for x in word_list:
             for y in x:
                 if y in self.emphasis:
-                    i = 2
+                    i = 2　　#強調の単語がきた場合の類似度の倍数
                     continue
                 token = self.t.tokenize(y).__next__().part_of_speech.split(',')[0]
                 if (y in self.model.wv.vocab) and (y != "する") and (token != '副詞'):
